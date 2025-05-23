@@ -14,6 +14,8 @@ A clean and scalable boilerplate for building backend APIs using Node.js and Typ
 - 🚧 Under development — more features to come
 
 ---
+
+
 ---
 
 ## 🚀 Getting Started
@@ -25,7 +27,7 @@ A clean and scalable boilerplate for building backend APIs using Node.js and Typ
 
 ### Installation
 
-```bash
+``bash
 git clone https://github.com/your-username/your-repo-name.git
 cd your-repo-name
 
@@ -44,7 +46,7 @@ npm run build
 
 # Start the compiled server
 npm start
-```
+
 ## 📁 Project Structure
 ```
 ├── .env                # Environment variables
