@@ -10,36 +10,36 @@ import { authorize } from '../../middleware/authorize';
 import { validateBody } from '../../middleware/validate';
 import { notificationSchema, markAsReadSchema } from './notificationValidation';
 
-const router = express.Router();
+const notificationRouter = express.Router();
 
-router.post(
+notificationRouter.post(
   '/notifications',
   authenticate,
   authorize(['admin']),
-  validateBody(notificationSchema, 'body'),
+  validateBody(notificationSchema),
   createNotification
 );
 
-router.get(
+notificationRouter.get(
   '/notifications',
   authenticate,
   authorize(['admin', 'seller', 'customer']),
   getUserNotifications
 );
 
-router.patch(
+notificationRouter.patch(
   '/notifications/:id/read',
   authenticate,
   authorize(['admin', 'seller', 'customer']),
-  validateBody(markAsReadSchema, 'params'),
+  validateBody(markAsReadSchema),
   markNotificationAsRead
 );
 
-router.delete(
+notificationRouter.delete(
   '/notifications/:id',
   authenticate,
   authorize(['admin', 'seller', 'customer']),
   deleteNotification
 );
 
-export default router;
+export default notificationRouter;

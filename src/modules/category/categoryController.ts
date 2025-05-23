@@ -4,7 +4,6 @@ import { CategoryModel } from './categoryModel';
 import { AuthRequest } from '../../middleware/authenticate';
 import { AppError } from '../../utils/AppError';
 
-// Add Category (admin only)
 export const addCategory = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'admin') {
@@ -21,7 +20,6 @@ export const addCategory = async (req: AuthRequest, res: Response, next: NextFun
   }
 };
 
-// Update Category (admin only)
 export const updateCategory = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'admin') {
@@ -49,7 +47,6 @@ export const updateCategory = async (req: AuthRequest, res: Response, next: Next
   }
 };
 
-// Soft Delete Category (admin only)
 export const deleteCategory = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'admin') {
@@ -77,7 +74,6 @@ export const deleteCategory = async (req: AuthRequest, res: Response, next: Next
   }
 };
 
-// Public: Get all active categories
 export const getAllCategories = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const categories = await CategoryModel.find({ isActive: true });

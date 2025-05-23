@@ -6,7 +6,6 @@ import { AuthRequest } from '../../middleware/authenticate';
 import { AppError } from '../../utils/AppError';
 import { SellerModel } from '../seller/sellerModel';
 
-// Add product with multiple images, only seller can add their own product
 export const addProduct = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'seller') {
@@ -18,17 +17,8 @@ export const addProduct = async (req: AuthRequest, res: Response, next: NextFunc
       throw new AppError('Seller profile not found for this user', 403);
     }
 
-    const {
-      name,
-      description,
-      image,
-      price,
-      stockQty,
-      categoryId,
-      images, // array of image URLs
-    } = req.body;
+    const { name, description, image, price, stockQty, categoryId, images } = req.body;
 
-    // Create product with sellerId from seller document
     const newProduct = await ProductModel.create({
       sellerId: seller._id,
       name,
@@ -57,7 +47,6 @@ export const addProduct = async (req: AuthRequest, res: Response, next: NextFunc
   }
 };
 
-// Update product details only, seller can update only own products
 export const updateProduct = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'seller') {
@@ -79,7 +68,6 @@ export const updateProduct = async (req: AuthRequest, res: Response, next: NextF
       throw new AppError('Product not found or inactive', 404);
     }
 
-    // Check ownership by comparing seller._id with product.sellerId
     if (product.sellerId.toString() !== seller._id.toString()) {
       throw new AppError('Unauthorized to update this product', 403);
     }
@@ -98,7 +86,6 @@ export const updateProduct = async (req: AuthRequest, res: Response, next: NextF
   }
 };
 
-// Soft delete (deactivate) product and its images, seller can only delete own products
 export const deleteProduct = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'seller') {
@@ -138,7 +125,6 @@ export const deleteProduct = async (req: AuthRequest, res: Response, next: NextF
   }
 };
 
-// Get product by id (public or admin access, no seller check here)
 export const getProductById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const productId = req.params.id;
@@ -160,10 +146,8 @@ export const getProductById = async (req: Request, res: Response, next: NextFunc
   }
 };
 
-// Get all active products (public)
 export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // Parse query parameters
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
@@ -173,7 +157,6 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
       ProductModel.countDocuments({ isActive: true }),
     ]);
 
-    // Get images for all products in parallel
     const productsWithImages = await Promise.all(
       products.map(async (product) => {
         const images = await ProductImageModel.find({ productId: product._id, isActive: true });

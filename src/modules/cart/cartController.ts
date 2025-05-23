@@ -10,7 +10,6 @@ import { DiscountModel } from '../discount/discountModel';
 import { IProduct } from '../product/productType';
 import { AppError } from '../../utils/AppError';
 
-// Add to cart
 export const addToCart = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'customer') {
@@ -22,21 +21,18 @@ export const addToCart = async (req: AuthRequest, res: Response, next: NextFunct
 
     const { productId, quantity } = cartItemSchema.parse(req.body);
 
-    // Find or create cart for customer
     let cart = await CartModel.findOne({ customerId: req.userId });
     if (!cart) {
       cart = new CartModel({ customerId: req.userId });
       await cart.save();
     }
 
-    // Check if product already in cart
     const existingItem = await CartItemModel.findOne({
       cartId: cart._id,
       productId,
     });
 
     if (existingItem) {
-      // Update quantity instead of adding duplicate
       existingItem.quantity += quantity;
       existingItem.lastUpdated = new Date();
       await existingItem.save();
@@ -44,7 +40,6 @@ export const addToCart = async (req: AuthRequest, res: Response, next: NextFunct
       return;
     }
 
-    // Create new cart item
     const newCartItem = new CartItemModel({
       cartId: cart._id,
       productId,
@@ -59,7 +54,6 @@ export const addToCart = async (req: AuthRequest, res: Response, next: NextFunct
   }
 };
 
-// Update quantity of a cart item
 export const updateCartItem = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'customer') {
@@ -74,10 +68,8 @@ export const updateCartItem = async (req: AuthRequest, res: Response, next: Next
       throw new AppError('Invalid cart item ID', 400);
     }
 
-    // Validate and parse quantity from req.body
     const { quantity } = z.object({ quantity: z.number().int().min(1) }).parse(req.body);
 
-    // Find cart for customer
     const cart = await CartModel.findOne({ customerId: req.userId });
     if (!cart) {
       throw new AppError('Cart not found for user', 404);
@@ -98,7 +90,6 @@ export const updateCartItem = async (req: AuthRequest, res: Response, next: Next
   }
 };
 
-// Remove cart item
 export const removeCartItem = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'customer') {
@@ -131,7 +122,6 @@ export const removeCartItem = async (req: AuthRequest, res: Response, next: Next
   }
 };
 
-// Get cart with all items
 export const getCart = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'customer') {
@@ -147,14 +137,12 @@ export const getCart = async (req: AuthRequest, res: Response, next: NextFunctio
       return;
     }
 
-    // Populate productId fully
     const cartItems = await CartItemModel.find({ cartId: cart._id }).populate('productId');
     if (!cartItems.length) {
       res.status(200).json({ success: true, data: { cart, items: [] } });
       return;
     }
 
-    // Extract product and category IDs only for populated products
     const productIds = cartItems
       .map((item) =>
         item.productId && 'price' in item.productId ? (item.productId as IProduct)._id : null
@@ -169,7 +157,7 @@ export const getCart = async (req: AuthRequest, res: Response, next: NextFunctio
       )
       .filter((id): id is mongoose.Types.ObjectId => id !== null);
 
-    // Query active discounts that apply to any product or category in cart and not expired
+    // Check active discount
     const discounts = await DiscountModel.find({
       active: true,
       startDate: { $lte: new Date() },
@@ -188,7 +176,6 @@ export const getCart = async (req: AuthRequest, res: Response, next: NextFunctio
 
     const enrichedItems = await Promise.all(
       cartItems.map(async (item) => {
-        // Check if productId is populated properly
         if (!item.productId || !(item.productId as any).price) {
           return {
             ...item.toObject(),
@@ -202,7 +189,7 @@ export const getCart = async (req: AuthRequest, res: Response, next: NextFunctio
         const originalPrice = product.price;
         let discountedPrice = originalPrice;
 
-        // Find applicable discount for product or its category
+        // apply discount
         const applicableDiscount = discounts.find((discount) => {
           const hasProduct = (discount.applicableProducts ?? []).some(
             (id: mongoose.Types.ObjectId) => id.equals(product._id!)

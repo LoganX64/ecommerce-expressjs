@@ -1,5 +1,5 @@
 import { v2 as cloudinary } from 'cloudinary';
-import { config } from './config'; // adjust path if needed
+import { config } from './config';
 
 // Configure Cloudinary
 cloudinary.config({

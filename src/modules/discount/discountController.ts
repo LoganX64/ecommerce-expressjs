@@ -5,7 +5,6 @@ import { AppError } from '../../utils/AppError';
 import { AuthRequest } from '../../middleware/authenticate';
 import mongoose from 'mongoose';
 
-// Create a new discount (only for sellers)
 export const createDiscount = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'seller') {
@@ -25,7 +24,6 @@ export const createDiscount = async (req: AuthRequest, res: Response, next: Next
   }
 };
 
-// List discounts (admin sees all, sellers see theirs)
 export const listDiscounts = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const filter = req.userRole === 'admin' ? {} : { sellerId: req.userId };
@@ -37,7 +35,6 @@ export const listDiscounts = async (req: AuthRequest, res: Response, next: NextF
   }
 };
 
-// Get single discount by ID
 export const getDiscountById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
@@ -52,7 +49,6 @@ export const getDiscountById = async (req: Request, res: Response, next: NextFun
   }
 };
 
-// Update discount (only by owning seller)
 export const updateDiscount = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'seller') {
@@ -78,7 +74,6 @@ export const updateDiscount = async (req: AuthRequest, res: Response, next: Next
   }
 };
 
-// Delete a discount (seller only)
 export const deleteDiscount = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'seller') {

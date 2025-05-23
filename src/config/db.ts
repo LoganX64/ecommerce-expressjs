@@ -3,18 +3,21 @@ import { config } from './config';
 
 const connectDB = async () => {
   try {
+    if (!config.databaseUrl) {
+      throw new Error('Database URL is not defined in config');
+    }
+
+    await mongoose.connect(config.databaseUrl);
+
     mongoose.connection.on('connected', () => {
-      console.log('connection to DB successful');
+      console.log('Connected to MongoDB');
     });
 
     mongoose.connection.on('error', (error) => {
-      console.log('error in connection to database.', error);
+      console.error('MongoDB connection error:', error);
     });
-
-    await mongoose.connect(config.databaseUrl as string);
   } catch (err) {
-    console.error('failed to connect', err);
-
+    console.error('Initial DB connection failed:', err);
     process.exit(1);
   }
 };

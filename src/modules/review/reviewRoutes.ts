@@ -1,4 +1,3 @@
-// reviewRoutes.ts
 import express from 'express';
 import {
   addReview,
@@ -13,10 +12,9 @@ import { authorize } from '../../middleware/authorize';
 import { validateBody, validateParams } from '../../middleware/validate';
 import { createReviewSchema, updateReviewSchema } from './reviewValidation';
 
-const router = express.Router();
+const reviewRouter = express.Router();
 
-// Add a review (customer, only if order delivered)
-router.post(
+reviewRouter.post(
   '/reviews',
   authenticate,
   authorize(['customer']),
@@ -24,8 +22,7 @@ router.post(
   addReview
 );
 
-// Update a review (customer can update own review)
-router.put(
+reviewRouter.put(
   '/reviews/:id',
   authenticate,
   authorize(['customer']),
@@ -33,16 +30,12 @@ router.put(
   updateReview
 );
 
-// Delete a review (customer can delete own review)
-router.delete('/reviews/:id', authenticate, authorize(['customer']), deleteReview);
+reviewRouter.delete('/reviews/:id', authenticate, authorize(['customer']), deleteReview);
 
-// Get all reviews (public or optionally admin-only)
-router.get('/reviews', authenticate, authorize(['customer']), getAllReviews);
+reviewRouter.get('/reviews', authenticate, authorize(['customer']), getAllReviews);
 
-// Get a review by ID (public)
-router.get('/reviews/:id', getReviewById);
+reviewRouter.get('/reviews/:id', getReviewById);
 
-// Get reviews by Product ID (public)
-router.get('/products/:productId/reviews', getReviewsByProductId);
+reviewRouter.get('/products/:productId/reviews', getReviewsByProductId);
 
-export default router;
+export default reviewRouter;

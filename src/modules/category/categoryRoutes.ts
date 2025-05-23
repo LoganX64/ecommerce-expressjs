@@ -10,15 +10,19 @@ import { authorize } from '../../middleware/authorize';
 import { validateBody } from '../../middleware/validate';
 import { categorySchema, categoryUpdateSchema } from './categoryValidation';
 
-const router = express.Router();
+const categoryRouter = express.Router();
 
-// Public route - get all active categories (no auth)
-router.get('/', getAllCategories);
+categoryRouter.get('/', getAllCategories);
 
-// Admin-only routes
-router.post('/', authenticate, authorize(['admin']), validateBody(categorySchema), addCategory);
+categoryRouter.post(
+  '/',
+  authenticate,
+  authorize(['admin']),
+  validateBody(categorySchema),
+  addCategory
+);
 
-router.put(
+categoryRouter.put(
   '/:id',
   authenticate,
   authorize(['admin']),
@@ -26,6 +30,6 @@ router.put(
   updateCategory
 );
 
-router.delete('/:id', authenticate, authorize(['admin']), deleteCategory);
+categoryRouter.delete('/:id', authenticate, authorize(['admin']), deleteCategory);
 
-export default router;
+export default categoryRouter;

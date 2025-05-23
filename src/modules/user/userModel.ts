@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema<IUser>(
     isDeleted: { type: Boolean, default: false },
   },
   {
-    timestamps: true, // adds createdAt and updatedAt automatically
+    timestamps: true,
   }
 );
 

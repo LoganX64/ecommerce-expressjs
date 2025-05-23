@@ -65,7 +65,6 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 
     const { accessToken, refreshToken } = generateTokens(user._id.toString(), user.userRole);
 
-    // Save refreshToken in DB
     user.refreshToken = refreshToken;
     await user.save();
 
@@ -101,16 +100,13 @@ const updatePassword = async (req: AuthRequest, res: Response, next: NextFunctio
       throw new AppError('User not found', 404);
     }
 
-    // Check if current password matches
     const isMatch = await bcrypt.compare(currentPassword, user.password);
     if (!isMatch) {
       throw new AppError('Current password is incorrect', 401);
     }
 
-    // Hash the new password
     const hashedNewPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
 
-    // Update password
     user.password = hashedNewPassword;
     await user.save();
 
@@ -120,7 +116,34 @@ const updatePassword = async (req: AuthRequest, res: Response, next: NextFunctio
   }
 };
 
-// Forget and reset Password test code
+const deactivateUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      throw new AppError('Unauthorized', 401);
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { isDeleted: true },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      throw new AppError('User not found', 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'User account has been deactivated',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Forget and reset Password ----> test code
 
 // export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
 //   try {
@@ -171,32 +194,5 @@ const updatePassword = async (req: AuthRequest, res: Response, next: NextFunctio
 //     next(error);
 //   }
 // };
-const deactivateUser = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-    const userId = req.userId;
-
-    if (!userId) {
-      throw new AppError('Unauthorized', 401);
-    }
-
-    // Update isDeleted to true
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      userId,
-      { isDeleted: true },
-      { new: true }
-    );
-
-    if (!updatedUser) {
-      throw new AppError('User not found', 404);
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'User account has been deactivated',
-    });
-  } catch (error) {
-    next(error);
-  }
-};
 
 export { createUser, loginUser, updatePassword };

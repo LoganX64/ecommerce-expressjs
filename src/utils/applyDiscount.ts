@@ -1,14 +1,9 @@
-// utils/applyDiscount.ts
 export interface DiscountInput {
   originalPrice: number;
   value: number;
   valueType: 'percentage' | 'fixed';
 }
 
-/**
- * Applies a discount to a given price based on type.
- * Throws an error if the result would be negative.
- */
 export function applyDiscount({ originalPrice, value, valueType }: DiscountInput): number {
   if (originalPrice < 0) {
     throw new Error('Original price must be a non-negative number.');

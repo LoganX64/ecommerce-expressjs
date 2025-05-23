@@ -5,7 +5,6 @@ import mongoose from 'mongoose';
 import { AuthRequest } from '../../middleware/authenticate';
 import { AppError } from '../../utils/AppError';
 
-// Add a customer
 export const addCustomer = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { name, address, pincode, phoneNumber, email } = req.body;
@@ -19,7 +18,6 @@ export const addCustomer = async (req: AuthRequest, res: Response, next: NextFun
       throw new AppError('Invalid userId', 400);
     }
 
-    // Create new customer linked to userId
     const newCustomer = await CustomerModel.create({
       userId,
       name,
@@ -35,7 +33,6 @@ export const addCustomer = async (req: AuthRequest, res: Response, next: NextFun
   }
 };
 
-// Update customer by customer id
 export const updateCustomer = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const customerId = req.params.id;
@@ -84,7 +81,6 @@ export const getAllCustomers = async (req: AuthRequest, res: Response, next: Nex
   }
 };
 
-// Get customer by id - Admin only
 export const getCustomerById = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'admin') {

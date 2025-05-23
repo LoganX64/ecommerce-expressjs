@@ -1,4 +1,3 @@
-// orderItemModel.ts
 import mongoose from 'mongoose';
 import type { IOrderitem } from './orderItemType';
 

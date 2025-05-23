@@ -12,9 +12,9 @@ import {
 } from './productController';
 import authenticate from '../../middleware/authenticate';
 
-const router = express.Router();
+const productRouter = express.Router();
 
-router.post(
+productRouter.post(
   '/',
   authenticate,
   authorize(['seller']),
@@ -22,7 +22,7 @@ router.post(
   addProduct
 );
 
-router.put(
+productRouter.put(
   '/:id',
   authenticate,
   authorize(['seller']),
@@ -30,10 +30,10 @@ router.put(
   updateProduct
 );
 
-router.delete('/:id', authenticate, authorize(['seller']), deleteProduct);
+productRouter.delete('/:id', authenticate, authorize(['seller']), deleteProduct);
 
-router.get('/:id', getProductById);
+productRouter.get('/:id', getProductById);
 
-router.get('/', getAllProducts);
+productRouter.get('/', getAllProducts);
 
-export default router;
+export default productRouter;

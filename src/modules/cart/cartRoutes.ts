@@ -9,10 +9,10 @@ import {
   updateCartItemSchema,
 } from '../cartItem/cartItemValidate';
 
-const router = express.Router();
+const cartRouter = express.Router();
 
 // Add item to cart
-router.post(
+cartRouter.post(
   '/cart',
   authenticate,
   authorize(['customer']),
@@ -21,7 +21,7 @@ router.post(
 );
 
 // Update cart item quantity
-router.put(
+cartRouter.put(
   '/cart/item/:id',
   authenticate,
   authorize(['customer']),
@@ -31,7 +31,7 @@ router.put(
 );
 
 // Remove cart item
-router.delete(
+cartRouter.delete(
   '/cart/item/:id',
   authenticate,
   authorize(['customer']),
@@ -40,6 +40,6 @@ router.delete(
 );
 
 // Get full cart with discounts applied
-router.get('/cart', authenticate, authorize(['customer']), getCart);
+cartRouter.get('/cart', authenticate, authorize(['customer']), getCart);
 
-export default router;
+export default cartRouter;

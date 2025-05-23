@@ -11,10 +11,9 @@ import { authorize } from '../../middleware/authorize';
 import { validateBody } from '../../middleware/validate';
 import { discountSchema } from './discountValidation';
 
-const router = express.Router();
+const discountRouter = express.Router();
 
-// Create discount - seller only
-router.post(
+discountRouter.post(
   '/discounts',
   authenticate,
   authorize(['seller']),
@@ -22,14 +21,11 @@ router.post(
   createDiscount
 );
 
-// List discounts - admin sees all, sellers see their own
-router.get('/discounts', authenticate, authorize(['seller', 'admin']), listDiscounts);
+discountRouter.get('/discounts', authenticate, authorize(['seller', 'admin']), listDiscounts);
 
-// Get single discount by ID - admin or seller
-router.get('/discounts/:id', authenticate, authorize(['seller', 'admin']), getDiscountById);
+discountRouter.get('/discounts/:id', authenticate, authorize(['seller', 'admin']), getDiscountById);
 
-// Update discount - only owning seller
-router.put(
+discountRouter.put(
   '/discounts/:id',
   authenticate,
   authorize(['seller']),
@@ -37,7 +33,6 @@ router.put(
   updateDiscount
 );
 
-// Delete discount - only owning seller
-router.delete('/discounts/:id', authenticate, authorize(['seller']), deleteDiscount);
+discountRouter.delete('/discounts/:id', authenticate, authorize(['seller']), deleteDiscount);
 
-export default router;
+export default discountRouter;

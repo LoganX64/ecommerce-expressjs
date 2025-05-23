@@ -5,10 +5,9 @@ import { authorize } from '../../middleware/authorize';
 import { validateBody } from '../../middleware/validate';
 import { createSellerSchema, updateSellerSchema } from './sellerValidation';
 
-const router = express.Router();
+const sellerRouter = express.Router();
 
-// Add seller - any authenticated user (e.g., seller role)
-router.post(
+sellerRouter.post(
   '/sellers',
   authenticate,
   authorize(['seller', 'admin', 'customer']),
@@ -16,8 +15,7 @@ router.post(
   addSeller
 );
 
-// Update seller - only owner (authenticated user), enforced in controller
-router.put(
+sellerRouter.put(
   '/sellers/:id',
   authenticate,
   authorize(['seller', 'admin', 'customer']),
@@ -25,10 +23,8 @@ router.put(
   updateSeller
 );
 
-// Get all sellers - admin only
-router.get('/sellers', authenticate, authorize(['admin']), getAllSellers);
+sellerRouter.get('/sellers', authenticate, authorize(['admin']), getAllSellers);
 
-// Get seller by id - admin only
-router.get('/sellers/:id', authenticate, authorize(['admin']), getSellerById);
+sellerRouter.get('/sellers/:id', authenticate, authorize(['admin']), getSellerById);
 
-export default router;
+export default sellerRouter;

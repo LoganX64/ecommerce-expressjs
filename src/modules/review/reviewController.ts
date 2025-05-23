@@ -5,13 +5,11 @@ import { OrderModel } from '../order/orderModel';
 import { AppError } from '../../utils/AppError';
 import type { AuthRequest } from '../../middleware/authenticate';
 
-// Add a review (only if customer ordered & it's delivered)
 export const addReview = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const customerId = req.userId;
     const { productId, reviewText, rating } = req.body;
 
-    // Check if customer ordered this product and order is delivered
     const hasOrdered = await OrderModel.exists({
       customerId,
       status: 'delivered',
@@ -41,7 +39,6 @@ export const addReview = async (req: AuthRequest, res: Response, next: NextFunct
   }
 };
 
-// Update a review (only same customer can update)
 export const updateReview = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const customerId = req.userId;
@@ -66,7 +63,6 @@ export const updateReview = async (req: AuthRequest, res: Response, next: NextFu
   }
 };
 
-// Delete a review
 export const deleteReview = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const customerId = req.userId;
@@ -85,7 +81,6 @@ export const deleteReview = async (req: AuthRequest, res: Response, next: NextFu
   }
 };
 
-// Get all reviews (admin or public listing)
 export const getAllReviews = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const reviews = await ReviewModel.find().sort({ createdDate: -1 });
@@ -95,7 +90,6 @@ export const getAllReviews = async (_req: Request, res: Response, next: NextFunc
   }
 };
 
-// Get review by ID
 export const getReviewById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { reviewId } = req.params;
@@ -111,7 +105,6 @@ export const getReviewById = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-// Get reviews by Product ID
 export const getReviewsByProductId = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { productId } = req.params;

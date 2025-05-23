@@ -6,7 +6,6 @@ import { notificationSchema, markAsReadSchema } from './notificationValidation';
 import { AppError } from '../../utils/AppError';
 import { sendNotification } from '../../utils/sendNotification';
 
-// Create notification (Admin or System trigger)
 export const createNotification = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const validated = notificationSchema.parse(req.body);
@@ -26,7 +25,6 @@ export const createNotification = async (req: AuthRequest, res: Response, next: 
   }
 };
 
-// Get notifications for current user
 export const getUserNotifications = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (!req.userId) throw new AppError('Unauthorized', 401);
@@ -40,7 +38,6 @@ export const getUserNotifications = async (req: AuthRequest, res: Response, next
   }
 };
 
-// Mark notification as read
 export const markNotificationAsRead = async (
   req: AuthRequest,
   res: Response,
@@ -64,7 +61,6 @@ export const markNotificationAsRead = async (
   }
 };
 
-// Delete notification (soft or hard depending on design)
 export const deleteNotification = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;

@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import { AuthRequest } from '../../middleware/authenticate';
 import { AppError } from '../../utils/AppError';
 
-// Add a seller
 export const addSeller = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { name, address, pincode, phoneNumber, email } = req.body;
@@ -35,7 +34,6 @@ export const addSeller = async (req: AuthRequest, res: Response, next: NextFunct
   }
 };
 
-// Update seller by seller id
 export const updateSeller = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const sellerId = req.params.id;
@@ -73,7 +71,6 @@ export const updateSeller = async (req: AuthRequest, res: Response, next: NextFu
   }
 };
 
-// Get all sellers - Admin only
 export const getAllSellers = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'admin') {
@@ -87,7 +84,6 @@ export const getAllSellers = async (req: AuthRequest, res: Response, next: NextF
   }
 };
 
-// Get seller by id - Admin only
 export const getSellerById = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     if (req.userRole !== 'admin') {

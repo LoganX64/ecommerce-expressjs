@@ -26,7 +26,6 @@ export const createOrder = async (req: AuthRequest, res: Response, next: NextFun
       throw new AppError('Cart is empty', 400);
     }
 
-    // Collect product and category IDs for discount matching
     const productIds = cartItems.map((item) => item.productId._id);
     const categoryIds = cartItems
       .map((item) => {
@@ -82,7 +81,7 @@ export const createOrder = async (req: AuthRequest, res: Response, next: NextFun
       totalPrice += finalPrice * item.quantity;
 
       orderItems.push({
-        orderId: undefined, // to be filled after creating order
+        orderId: undefined,
         productId: product._id,
         quantity: item.quantity,
         price: finalPrice,
@@ -99,10 +98,8 @@ export const createOrder = async (req: AuthRequest, res: Response, next: NextFun
       notes: req.body.notes || '',
     });
 
-    // Assign orderId to each order item and save
     await OrderitemModel.insertMany(orderItems.map((item) => ({ ...item, orderId: order._id })));
 
-    // Cleanup cart
     await CartItemModel.deleteMany({ cartId: cart._id });
     await CartModel.deleteOne({ _id: cart._id });
 
@@ -129,7 +126,6 @@ export const cancelOrder = async (req: AuthRequest, res: Response, next: NextFun
       throw new AppError('Not authorized to cancel this order', 403);
     }
 
-    // Prevent cancel if already cancelled or delivered
     if (order.status === 'cancelled') {
       res.status(400).json({ success: false, message: 'Order already cancelled' });
       return;
@@ -180,7 +176,6 @@ export const getOrderById = async (req: AuthRequest, res: Response, next: NextFu
       throw new AppError('Order not found', 404);
     }
 
-    // Customers can only access their own orders; admins can access any
     if (req.userRole === 'customer' && order.customerId.toString() !== req.userId) {
       throw new AppError('Not authorized to view this order', 403);
     }

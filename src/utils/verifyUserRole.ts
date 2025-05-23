@@ -7,13 +7,6 @@ export interface DecodedToken {
   role: string;
 }
 
-/**
- * Verify JWT token and user role inside controller.
- * @param token JWT token string (without "Bearer " prefix)
- * @param allowedRoles Array of roles allowed to access
- * @returns DecodedToken with userId (sub) and role if valid.
- * @throws HttpError 401 if invalid token, 403 if role unauthorized
- */
 export const verifyUserRole = (token: string, allowedRoles: string[]): DecodedToken => {
   if (!token) {
     throw createHttpError(401, 'Authorization token is required');

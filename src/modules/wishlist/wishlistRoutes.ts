@@ -1,17 +1,22 @@
 import express from 'express';
-import { WishlistModel } from './wishlistModel';
+import { addToWishlist, removeFromWishlist, getWishlist } from './wishlistController';
+import authenticate from '../../middleware/authenticate';
+import { authorize } from '../../middleware/authorize';
+import { validateBody } from '../../middleware/validate';
+import { wishlistSchema } from './wishlistValidation';
 
-const router = express.Router();
+const wishlistRouter = express.Router();
 
-router.get('/', async (req, res) => {
-  const items = await WishlistModel.find();
-  res.json(items);
-});
+wishlistRouter.post(
+  '/wishlist',
+  authenticate,
+  authorize(['customer']),
+  validateBody(wishlistSchema),
+  addToWishlist
+);
 
-router.post('/', async (req, res) => {
-  const newItem = new WishlistModel(req.body);
-  await newItem.save();
-  res.status(201).json(newItem);
-});
+wishlistRouter.delete('/wishlist/:id', authenticate, authorize(['customer']), removeFromWishlist);
 
-export default router;
+wishlistRouter.get('/wishlist', authenticate, authorize(['customer']), getWishlist);
+
+export default wishlistRouter;
