@@ -1,6 +1,7 @@
 # Node.js + TypeScript Backend Boilerplate
 
 A clean and scalable boilerplate for building backend APIs using Node.js and TypeScript. Includes essential development tooling like ESLint, Prettier, and environment variable management, with a modular code structure to help you get started quickly.
+
 ---
 ## 📦 Features
 
@@ -56,6 +57,7 @@ npm start
 └── src/
     └── app.ts          # App logic and Express config
 ```
+
 
 🤝 Contributing
 Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes. Open an issue to discuss any major changes.
