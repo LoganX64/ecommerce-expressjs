@@ -54,7 +54,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const user = await UserModel.findOne({ email });
-    if (!user) {
+    if (!user || user.isDeleted) {
       throw new AppError('Invalid email or password', 401);
     }
 
@@ -137,6 +137,12 @@ const deactivateUser = async (req: AuthRequest, res: Response, next: NextFunctio
     res.status(200).json({
       success: true,
       message: 'User account has been deactivated',
+      user: {
+        id: updatedUser._id,
+        email: updatedUser.email,
+        userRole: updatedUser.userRole,
+        isDeleted: updatedUser.isDeleted,
+      },
     });
   } catch (error) {
     next(error);
@@ -195,4 +201,4 @@ const deactivateUser = async (req: AuthRequest, res: Response, next: NextFunctio
 //   }
 // };
 
-export { createUser, loginUser, updatePassword };
+export { createUser, loginUser, updatePassword, deactivateUser };

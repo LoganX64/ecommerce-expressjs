@@ -6,7 +6,15 @@ export const validateBody =
   (req: Request, res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.body);
     if (!result.success) {
-      res.status(400).json({ errors: result.error.flatten().fieldErrors });
+      const { fieldErrors, formErrors } = result.error.flatten();
+      res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: {
+          fields: fieldErrors,
+          form: formErrors,
+        },
+      });
       return;
     }
     req.body = result.data;
@@ -18,7 +26,15 @@ export const validateParams =
   (req: Request, res: Response, next: NextFunction): void => {
     const result = schema.safeParse(req.params);
     if (!result.success) {
-      res.status(400).json({ errors: result.error.flatten().fieldErrors });
+      const { fieldErrors, formErrors } = result.error.flatten();
+      res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: {
+          fields: fieldErrors,
+          form: formErrors,
+        },
+      });
       return;
     }
     req.params = result.data;
